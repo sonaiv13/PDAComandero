@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "3428341357",
+    "project_id": "pdacomandero",
+    "storage_bucket": "pdacomandero.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3428341357:android:27bc6fd300f8c988819164",
+        "android_client_info": {
+          "package_name": "com.example.pdacomandero"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPnV89rNpV_P7ZSjZEcQUqpeZbykBTcLQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

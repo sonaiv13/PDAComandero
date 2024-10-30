@@ -62,7 +62,7 @@
             android:inputType="textPassword" />
 
         <ToggleButton
-            android:id="@+id/boton_mostrar_pass"
+            android:id="@+id/btnMostrarPass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -94,12 +94,12 @@
         android:textColor="@color/black"
         android:textSize="17dp"
         android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/boton_registro"
-        app:layout_constraintEnd_toEndOf="@+id/boton_registro"
-        app:layout_constraintStart_toStartOf="@+id/boton_registro" />
+        app:layout_constraintBottom_toTopOf="@+id/btnRegistro"
+        app:layout_constraintEnd_toEndOf="@+id/btnRegistro"
+        app:layout_constraintStart_toStartOf="@+id/btnRegistro" />
 
     <Button
-        android:id="@+id/boton_registro"
+        android:id="@+id/btnRegistro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/buttons"
@@ -114,7 +114,7 @@
         android:layout_height="wrap_content"
         android:indeterminateBehavior="repeat"
         android:indeterminateTint="@color/buttons"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/editCorreo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
