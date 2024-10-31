@@ -25,12 +25,17 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
+    private var correoRecibido: String? = null
+    private var nombreRecibido: String? = null
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance("https://pdacomandero-default-rtdb.europe-west1.firebasedatabase.app/")
+        correoRecibido = arguments?.getString("correo")
+        nombreRecibido = arguments?.getString("nombre")
     }
 
     override fun onCreateView(
@@ -46,6 +51,22 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //Comprobar si el usuario ya había iniciado sesión
+        val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val savedEmail = sharedPreferences.getString("email", null)
+        if(savedEmail != null){
+            findNavController().navigate(R.id.action_LoginFragment_to_MainFragment)
+            return
+        }
+
+        //Guardar y recuperar datos del usuario
+        val correoRegistro = binding.editCorreo.text.toString()
+
+        val bundle = Bundle()
+        bundle.putString("correo", correoRecibido.toString())
+        bundle.putString("nombre", correoRegistro)
+
+        //Funcionalidad BOTONES
         binding.btnMostrarPass.setOnCheckedChangeListener {_, isChecked ->
             if(isChecked){
                 binding.editPass.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
@@ -77,8 +98,14 @@ class LoginFragment : Fragment() {
                                         binding.progressBar.visibility = View.GONE
 
                                         if(it.isSuccessful){
+                                            //Guardar el correo en preferencias para futuras sesiones
+                                            sharedPreferences.edit().putString("email", binding.editCorreo.text.toString()).apply()
+
                                             val bundle = Bundle()
                                             bundle.putString("nombre", usuario.nombre)
+                                            findNavController().navigate(R.id.action_LoginFragment_to_MainFragment, bundle)
+                                        } else {
+                                            Snackbar.make(view, "Datos incorrectos, prueba otra vez.", Snackbar.LENGTH_SHORT).show()
                                         }
                                     }
                             }
@@ -99,7 +126,7 @@ class LoginFragment : Fragment() {
         }
 
         binding.btnRegistro.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+            findNavController().navigate(R.id.action_LoginFragment_to_RegisterFragment)
         }
 
     }
