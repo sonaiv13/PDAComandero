@@ -4,7 +4,102 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="30dp"
+    android:background="@color/background"
     tools:context=".ui.fragments.RegisterFragment">
+
+    <TextView
+        android:id="@+id/textBienvenida"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Regístrate aquí"
+        android:textColor="@color/buttons"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <EditText
+        android:id="@+id/editNombreRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Introduzca su nombre"
+        android:layout_marginTop="50dp"
+        android:drawableLeft="@drawable/userregistro"
+        android:drawablePadding="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/textBienvenida"
+        tools:layout_editor_absoluteX="20dp" />
+
+    <EditText
+        android:id="@+id/editCorreoRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Introduzca un correo"
+        android:layout_marginTop="10dp"
+        android:drawableLeft="@drawable/email"
+        android:drawablePadding="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/editNombreRegistro"
+        app:layout_constraintStart_toStartOf="@+id/editNombreRegistro"
+        app:layout_constraintTop_toBottomOf="@+id/editNombreRegistro" />
+
+    <EditText
+        android:id="@+id/editTelefonoRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:drawableLeft="@drawable/telefono"
+        android:drawablePadding="10dp"
+        android:hint="Introduzca un número de contacto"
+        app:layout_constraintEnd_toEndOf="@+id/editCorreoRegistro"
+        app:layout_constraintStart_toStartOf="@+id/editCorreoRegistro"
+        app:layout_constraintTop_toBottomOf="@+id/editCorreoRegistro" />
+
+    <EditText
+        android:id="@+id/editPassRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:drawableLeft="@drawable/pass"
+        android:drawablePadding="10dp"
+        android:hint="Introduzca una contraseña"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@+id/editTelefonoRegistro"
+        app:layout_constraintStart_toStartOf="@+id/editTelefonoRegistro"
+        app:layout_constraintTop_toBottomOf="@+id/editTelefonoRegistro" />
+
+    <EditText
+        android:id="@+id/editPassConfirmacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:drawableLeft="@drawable/passconfirm"
+        android:drawablePadding="10dp"
+        android:hint="Confirma la contraseña"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@+id/editPassRegistro"
+        app:layout_constraintStart_toStartOf="@+id/editPassRegistro"
+        app:layout_constraintTop_toBottomOf="@+id/editPassRegistro" />
+
+    <Button
+        android:id="@+id/btnRegistrar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registrarme"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/buttons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editPassConfirmacion" />
+
+    <Button
+        android:id="@+id/btnAtras"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Atrás"
+        android:backgroundTint="@color/buttons"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

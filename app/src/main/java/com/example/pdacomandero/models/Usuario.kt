@@ -7,7 +7,7 @@ class Usuario(var nombre: String? = null, var correo: String? = null, var telefo
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
-        parcel.readValue(Int::class.java.classLoader) as? Int
+        parcel.readInt()
     ) {
     }
 
