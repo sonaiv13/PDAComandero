@@ -34,7 +34,6 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val bottomNav: BottomNavigationView = binding.bottomNav
-        val navController = findNavController(R.id.)
 
     }
 
