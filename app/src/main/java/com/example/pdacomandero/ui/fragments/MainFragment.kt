@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.pdacomandero.R
 import com.example.pdacomandero.databinding.FragmentMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainFragment : Fragment() {
 
@@ -31,6 +32,9 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val bottomNav: BottomNavigationView = binding.bottomNav
+        val navController = findNavController(R.id.)
 
     }
 
