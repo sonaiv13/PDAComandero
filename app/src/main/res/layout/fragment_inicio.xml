@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:text="Mesas"
         android:textSize="25dp"
+        android:backgroundTint="@color/buttons"
         android:layout_marginTop="30dp"
         android:layout_marginLeft="20dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,6 +26,7 @@
         android:layout_height="wrap_content"
         android:text="Cuentas"
         android:textSize="25dp"
+        android:backgroundTint="@color/buttons"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnMesas"
         app:layout_constraintTop_toTopOf="@+id/btnMesas" />

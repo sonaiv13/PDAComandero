@@ -8,7 +8,28 @@
     android:padding="20dp"
     tools:context=".ui.fragments.inicio.InicioFragment">
 
+    <Button
+        android:id="@+id/btnMesas"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:text="Bebidas"
+        android:textSize="25dp"
+        android:backgroundTint="@color/buttons"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-
+    <Button
+        android:id="@+id/btnCuentas"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:text="Comida"
+        android:textSize="25dp"
+        android:backgroundTint="@color/buttons"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/btnMesas"
+        app:layout_constraintStart_toStartOf="@+id/btnMesas"
+        app:layout_constraintTop_toBottomOf="@+id/btnMesas" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

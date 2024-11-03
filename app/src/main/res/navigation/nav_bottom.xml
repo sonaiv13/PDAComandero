@@ -16,4 +16,10 @@
         android:name="com.example.pdacomandero.ui.fragments.menu.MenuFragment"
         android:label="Menu"
         tools:layout="@layout/fragment_menu" />
+
+    <fragment
+        android:id="@+id/nav_ajustes"
+        android:name="com.example.pdacomandero.ui.fragments.ajustes.AjustesFragment"
+        android:label="Ajustes"
+        tools:layout="@layout/fragment_ajustes" />
 </navigation>
