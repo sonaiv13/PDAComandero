@@ -1,4 +1,4 @@
-package com.example.pdacomandero.ui.fragments.inicio
+package com.example.pdacomandero.ui.fragments.ajustes
 
 import android.content.Context
 import android.os.Bundle
@@ -9,13 +9,15 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.pdacomandero.R
+import com.example.pdacomandero.databinding.FragmentAjustesBinding
 import com.example.pdacomandero.databinding.FragmentInicioBinding
 import com.example.pdacomandero.databinding.FragmentMainBinding
+import com.example.pdacomandero.databinding.FragmentMenuBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class InicioFragment : Fragment() {
+class AjustesFragment : Fragment() {
 
-    private lateinit var binding: FragmentInicioBinding
+    private lateinit var binding: FragmentAjustesBinding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -27,7 +29,7 @@ class InicioFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        binding = FragmentInicioBinding.inflate(inflater, container, false)
+        binding = FragmentAjustesBinding.inflate(inflater, container, false)
         return binding.root
 
     }

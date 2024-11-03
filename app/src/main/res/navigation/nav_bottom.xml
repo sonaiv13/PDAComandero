@@ -10,4 +10,10 @@
         android:name="com.example.pdacomandero.ui.fragments.inicio.InicioFragment"
         android:label="Inicio"
         tools:layout="@layout/fragment_inicio" />
+
+    <fragment
+        android:id="@+id/nav_menu"
+        android:name="com.example.pdacomandero.ui.fragments.menu.MenuFragment"
+        android:label="Menu"
+        tools:layout="@layout/fragment_menu" />
 </navigation>
