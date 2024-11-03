@@ -25,7 +25,7 @@
     <fragment
         android:id="@+id/MainFragment"
         android:name="com.example.pdacomandero.ui.fragments.MainFragment"
-        android:label="@string/second_fragment_label"
+        android:label="Main Fragment"
         tools:layout="@layout/fragment_main">
 
         <action

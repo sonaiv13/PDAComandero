@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_menu_nav"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/nav_inicio">
 
     <fragment
-        android:id="@+id/mainFragment"
-        android:name="com.example.pdacomandero.ui.fragments.MainFragment"
-        android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
+        android:id="@+id/nav_inicio"
+        android:name="com.example.pdacomandero.ui.fragments.inicio.InicioFragment"
+        android:label="Inicio"
+        tools:layout="@layout/fragment_inicio" />
 </navigation>
