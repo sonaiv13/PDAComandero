@@ -37,9 +37,10 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navController = requireActivity().findNavController(R.id.nav_host_fragment_main)
-        val bottomNav: BottomNavigationView = binding.bottomNav
-        bottomNav.setupWithNavController(navController)
+        val navController = childFragmentManager.findFragmentById(R.id.nav_host_fragment_main)?.findNavController()
+        if (navController != null){
+            binding.bottomNav.setupWithNavController(navController)
+        }
     }
 
     override fun onDetach() {
