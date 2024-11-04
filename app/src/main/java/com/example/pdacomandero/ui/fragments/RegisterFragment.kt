@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.pdacomandero.R
 import com.example.pdacomandero.databinding.FragmentMainBinding
 import com.example.pdacomandero.databinding.FragmentRegisterBinding
+import com.example.pdacomandero.models.Mesa
 import com.example.pdacomandero.models.Usuario
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -61,6 +62,14 @@ class RegisterFragment : Fragment() {
 
                             referenciaUsuarios.child(userId).setValue(nuevoUsuario)
                                 .addOnSuccessListener {
+                                    //Crea 30 mesas para el nuevo usuario
+                                    val referenciaMesas = referenciaUsuarios.child(userId).child("mesas")
+                                    for(i in 1..30){
+                                        val mesa = Mesa(id = i, numero = i, disponible = true, pedidos = mutableListOf())
+                                        referenciaMesas.child("mesa$i").setValue(mesa)
+                                    }
+
+                                    //Navega al MainFragment al completar el registro
                                     val bundle = Bundle().apply { putString("correo", correo) }
                                     findNavController().navigate(R.id.action_RegisterFragment_to_MainFragment, bundle)
                                     Snackbar.make(view, "Se ha registrado correctamente.", Snackbar.LENGTH_SHORT).show()

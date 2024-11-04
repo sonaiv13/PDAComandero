@@ -9,7 +9,11 @@
         android:id="@+id/nav_inicio"
         android:name="com.example.pdacomandero.ui.fragments.inicio.InicioFragment"
         android:label="Inicio"
-        tools:layout="@layout/fragment_inicio" />
+        tools:layout="@layout/fragment_inicio" >
+        <action
+            android:id="@+id/action_nav_inicio_to_mesasFragment"
+            app:destination="@id/mesasFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_menu"
@@ -21,5 +25,12 @@
         android:id="@+id/nav_ajustes"
         android:name="com.example.pdacomandero.ui.fragments.ajustes.AjustesFragment"
         android:label="Ajustes"
-        tools:layout="@layout/fragment_ajustes" />
+        tools:layout="@layout/fragment_ajustes" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/mesasFragment"
+        android:name="com.example.pdacomandero.ui.fragments.inicio.MesasFragment"
+        android:label="MesasFragment"
+        tools:layout="@layout/fragment_mesas"/>
 </navigation>
