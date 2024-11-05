@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -42,6 +44,7 @@ class MainFragment : Fragment() {
         val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
         val navController = navHostFragment.navController
 
+        //Bottom Navigation Bar
         val bottomNavigationView = view.findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNavigationView.setupWithNavController(navController)
 
@@ -60,6 +63,14 @@ class MainFragment : Fragment() {
                     navController.navigate(R.id.nav_facturas)
                 }
             }
+        }
+
+        //Drawer Navigation Bar
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val navigationView = binding.drawerNav
+
+        binding.btnOpciones.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
         }
     }
 
