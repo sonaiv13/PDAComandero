@@ -2,14 +2,15 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottom_menu_nav"
+    android:id="@+id/nav_bottom"
     app:startDestination="@id/nav_inicio">
+
 
     <fragment
         android:id="@+id/nav_inicio"
         android:name="com.example.pdacomandero.ui.fragments.inicio.InicioFragment"
         android:label="Inicio"
-        tools:layout="@layout/fragment_inicio" >
+        tools:layout="@layout/fragment_inicio">
         <action
             android:id="@+id/action_nav_inicio_to_mesasFragment"
             app:destination="@id/mesasFragment" />
@@ -22,15 +23,16 @@
         tools:layout="@layout/fragment_menu" />
 
     <fragment
-        android:id="@+id/nav_ajustes"
-        android:name="com.example.pdacomandero.ui.fragments.ajustes.AjustesFragment"
-        android:label="Ajustes"
-        tools:layout="@layout/fragment_ajustes" >
-    </fragment>
+        android:id="@+id/nav_facturas"
+        android:name="com.example.pdacomandero.ui.fragments.facturas.FacturasFragment"
+        android:label="Facturas"
+        tools:layout="@layout/fragment_facturas" />
 
     <fragment
         android:id="@+id/mesasFragment"
         android:name="com.example.pdacomandero.ui.fragments.inicio.MesasFragment"
         android:label="MesasFragment"
         tools:layout="@layout/fragment_mesas"/>
+
+
 </navigation>

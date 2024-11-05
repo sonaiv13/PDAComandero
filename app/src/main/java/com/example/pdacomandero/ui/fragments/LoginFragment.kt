@@ -11,6 +11,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.pdacomandero.R
 import com.example.pdacomandero.databinding.FragmentLoginBinding
 import com.example.pdacomandero.models.Usuario
+import com.example.pdacomandero.ui.activities.MainActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
@@ -80,17 +82,17 @@ class LoginFragment : Fragment() {
             if(binding.editCorreo.text.isEmpty() || binding.editPass.text.isEmpty()){
                 Snackbar.make(view, "Por favor, rellene todos los campos", Snackbar.LENGTH_SHORT).show()
             } else {
-                var usuarioEncontrado = false
                 val referencia = database.getReference("usuarios")
 
                 //Mostrar indicador progreso
                 binding.progressBar.visibility = View.VISIBLE
 
-                referencia.addValueEventListener(object : ValueEventListener{
+                referencia.addListenerForSingleValueEvent(object : ValueEventListener{
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        snapshot.children.forEach {usuario ->
-                            val usuario = usuario.getValue(Usuario::class.java)
-                            if(usuario!!.correo.toString() == binding.editCorreo.text.toString()){
+                        var usuarioEncontrado = false
+                        snapshot.children.forEach {usuarioSnapshot ->
+                            val usuario = usuarioSnapshot.getValue(Usuario::class.java)
+                            if(usuario?.correo.toString() == binding.editCorreo.text.toString()){
                                 usuarioEncontrado = true
                                 auth.signInWithEmailAndPassword(binding.editCorreo.text.toString(), binding.editPass.text.toString())
                                     .addOnCompleteListener {
@@ -101,8 +103,7 @@ class LoginFragment : Fragment() {
                                             //Guardar el correo en preferencias para futuras sesiones
                                             sharedPreferences.edit().putString("email", binding.editCorreo.text.toString()).apply()
 
-                                            val bundle = Bundle()
-                                            bundle.putString("nombre", usuario.nombre)
+                                            val bundle = Bundle().apply { putString("nombre", usuario!!.nombre) }
                                             findNavController().navigate(R.id.action_LoginFragment_to_MainFragment, bundle)
                                         } else {
                                             Snackbar.make(view, "Datos incorrectos, prueba otra vez.", Snackbar.LENGTH_SHORT).show()
