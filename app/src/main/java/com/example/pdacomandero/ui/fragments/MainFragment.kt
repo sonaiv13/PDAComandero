@@ -16,8 +16,10 @@ import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.pdacomandero.R
 import com.example.pdacomandero.databinding.FragmentMainBinding
+import com.example.pdacomandero.ui.dialogs.DialogoSalir
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
+import com.google.android.material.navigation.NavigationView
 
 class MainFragment : Fragment() {
 
@@ -72,6 +74,21 @@ class MainFragment : Fragment() {
         binding.btnOpciones.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
+
+        //Listener Drawer Items
+        navigationView.setNavigationItemSelectedListener {item ->
+            when(item.itemId){
+                R.id.cerrarSesion -> {
+                    val dialogoSalir = DialogoSalir()
+                    dialogoSalir.show(childFragmentManager, "DialogoSalir")
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+                else -> false
+            }
+
+        }
+
     }
 
     override fun onDetach() {

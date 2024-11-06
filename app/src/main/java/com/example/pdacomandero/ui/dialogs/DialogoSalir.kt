@@ -49,6 +49,6 @@ class DialogoSalir : DialogFragment() {
         FirebaseAuth.getInstance().signOut()
         val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         sharedPreferences.edit().remove("email").apply()
-        val navController = findNavController()
+        findNavController().navigate(R.id.action_global_to_LoginFragment)
     }
 }
