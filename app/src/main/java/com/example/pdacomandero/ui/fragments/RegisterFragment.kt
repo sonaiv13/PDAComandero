@@ -66,7 +66,7 @@ class RegisterFragment : Fragment() {
                                     val referenciaMesas = referenciaUsuarios.child(userId).child("mesas")
                                     for(i in 1..30){
                                         val mesa = Mesa(id = i, numero = i, disponible = true, pedidos = mutableListOf())
-                                        referenciaMesas.child("mesa$i").setValue(mesa)
+                                        referenciaMesas.child(i.toString()).setValue(mesa)
                                     }
 
                                     //Navega al MainFragment al completar el registro

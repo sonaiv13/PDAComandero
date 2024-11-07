@@ -11,11 +11,13 @@ import androidx.navigation.fragment.findNavController
 import com.example.pdacomandero.R
 import com.example.pdacomandero.databinding.FragmentInicioBinding
 import com.example.pdacomandero.databinding.FragmentMainBinding
+import com.example.pdacomandero.ui.dialogs.DialogoMesas
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class InicioFragment : Fragment() {
 
     private lateinit var binding: FragmentInicioBinding
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -37,7 +39,8 @@ class InicioFragment : Fragment() {
 
         //Funcionalidad BOTONES
         binding.btnMesas.setOnClickListener {
-            findNavController().navigate(R.id.action_nav_inicio_to_mesasFragment)
+            val dialogoMesas = DialogoMesas()
+            dialogoMesas.show(childFragmentManager, "DialogoMesas")
         }
 
         binding.btnCuentas.setOnClickListener {  }
