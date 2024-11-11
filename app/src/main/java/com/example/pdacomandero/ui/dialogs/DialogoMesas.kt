@@ -22,7 +22,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class DialogoMesas : DialogFragment() {
+class DialogoMesas : DialogFragment(), MesasAdapter.OnRecyclerMesasListener {
 
     private lateinit var contexto : Context
     private lateinit var vista: View
@@ -44,7 +44,7 @@ class DialogoMesas : DialogFragment() {
 
         val recyclerView = vista.findViewById<RecyclerView>(R.id.recyclerMesas)
         recyclerView.layoutManager = LinearLayoutManager(contexto)
-        mesasAdapter = MesasAdapter(listaMesas, contexto)
+        mesasAdapter = MesasAdapter(listaMesas, contexto, this)
         recyclerView.adapter = mesasAdapter
 
         cargarMesasDatabase()
@@ -75,6 +75,10 @@ class DialogoMesas : DialogFragment() {
 
             })
         }
+    }
+
+    override fun onMesaSelected(mesa: Mesa) {
+        findNavController().navigate(R.id.action_nav_inicio_to_mesasFragment)
     }
 
 }

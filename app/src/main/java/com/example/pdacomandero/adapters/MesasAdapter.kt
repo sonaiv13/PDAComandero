@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pdacomandero.R
 import com.example.pdacomandero.models.Mesa
 
-class MesasAdapter(var lista: ArrayList<Mesa>, val context: Context):
+class MesasAdapter(var lista: ArrayList<Mesa>, val context: Context, var listener: OnRecyclerMesasListener):
     RecyclerView.Adapter<MesasAdapter.MyHolder>() {
 
     class MyHolder(item: View): ViewHolder(item){
@@ -29,11 +29,19 @@ class MesasAdapter(var lista: ArrayList<Mesa>, val context: Context):
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         val mesa = lista[position]
         holder.numero.text = mesa.numero.toString()
+
+        holder.itemView.setOnClickListener {
+            listener.onMesaSelected(mesa)
+        }
     }
 
     fun actualizarMesas(nuevaLista: ArrayList<Mesa>) {
         lista.clear()
         lista.addAll(nuevaLista)
         notifyDataSetChanged()
+    }
+
+    interface OnRecyclerMesasListener{
+        fun onMesaSelected(mesa: Mesa)
     }
 }
