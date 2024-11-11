@@ -32,7 +32,11 @@
         android:id="@+id/mesasFragment"
         android:name="com.example.pdacomandero.ui.fragments.inicio.MesasFragment"
         android:label="MesasFragment"
-        tools:layout="@layout/fragment_mesas"/>
+        tools:layout="@layout/fragment_mesas">
+        <argument
+            android:name="mesaSeleccionada"
+            app:argType="com.example.pdacomandero.models.Mesa" />
+    </fragment>
 
 
 </navigation>

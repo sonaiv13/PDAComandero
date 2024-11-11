@@ -17,10 +17,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MesasFragment : Fragment() {
 
     private lateinit var binding: FragmentMesasBinding
+    private var mesaSeleccionada: Int? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
+        mesaSeleccionada = arguments?.getInt("mesaSeleccionada")
     }
 
     override fun onCreateView(
