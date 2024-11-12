@@ -78,7 +78,9 @@ class DialogoMesas : DialogFragment(), MesasAdapter.OnRecyclerMesasListener {
     }
 
     override fun onMesaSelected(mesa: Mesa) {
-        findNavController().navigate(R.id.action_nav_inicio_to_mesasFragment)
+        val bundle = Bundle()
+        bundle.putInt("mesaSeleccionada", mesa.numero)
+        findNavController().navigate(R.id.action_nav_inicio_to_mesasFragment, bundle)
     }
 
 }
