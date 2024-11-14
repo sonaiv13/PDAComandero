@@ -15,6 +15,7 @@ class MesasAdapter(var lista: ArrayList<Mesa>, val context: Context, var listene
 
     class MyHolder(item: View): ViewHolder(item){
         val numero: TextView = itemView.findViewById(R.id.numMesa)
+        val indicador: View = itemView.findViewById(R.id.indicador)
     }
 
     override fun getItemCount(): Int {
@@ -29,6 +30,12 @@ class MesasAdapter(var lista: ArrayList<Mesa>, val context: Context, var listene
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         val mesa = lista[position]
         holder.numero.text = mesa.numero.toString()
+
+        if (mesa.disponible){
+            holder.indicador.setBackgroundResource(R.drawable.circle_green)
+        } else {
+            holder.indicador.setBackgroundResource(R.drawable.circle_red)
+        }
 
         holder.itemView.setOnClickListener {
             listener.onMesaSelected(mesa)
