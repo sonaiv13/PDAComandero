@@ -35,6 +35,7 @@
             app:navGraph="@navigation/nav_bottom"
             app:defaultNavHost="false"/>
 
+
         <ImageButton
             android:id="@+id/btnOpciones"
             android:layout_width="wrap_content"

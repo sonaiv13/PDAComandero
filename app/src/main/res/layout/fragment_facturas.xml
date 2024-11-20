@@ -5,10 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:padding="20dp"
     tools:context=".ui.fragments.inicio.InicioFragment">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbarFacturas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
 
+        <com.google.android.material.appbar.MaterialToolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="Facturas"
+            app:titleCentered="true"
+            android:background="@color/background"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

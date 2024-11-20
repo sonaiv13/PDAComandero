@@ -5,31 +5,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:padding="20dp"
     tools:context=".ui.fragments.inicio.InicioFragment">
 
-    <Button
-        android:id="@+id/btnMesas"
-        android:layout_width="wrap_content"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbarInicio"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mesas"
-        android:textSize="25dp"
-        android:backgroundTint="@color/buttons"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:ignore="MissingConstraints">
 
-    <Button
-        android:id="@+id/btnCuentas"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cuentas"
-        android:textSize="25dp"
-        android:backgroundTint="@color/buttons"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnMesas"
-        app:layout_constraintTop_toTopOf="@+id/btnMesas" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="Inicio"
+            app:titleCentered="true"
+            android:background="@color/background"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarInicio">
+
+        <Button
+            android:id="@+id/btnMesas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:backgroundTint="@color/buttons"
+            android:text="Mesas"
+            android:textSize="25dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnCuentas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/buttons"
+            android:text="Cuentas"
+            android:textSize="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnMesas"
+            app:layout_constraintTop_toTopOf="@+id/btnMesas" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
