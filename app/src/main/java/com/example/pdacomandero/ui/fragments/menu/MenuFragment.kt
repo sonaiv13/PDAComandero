@@ -13,6 +13,7 @@ import com.example.pdacomandero.databinding.FragmentInicioBinding
 import com.example.pdacomandero.databinding.FragmentMainBinding
 import com.example.pdacomandero.databinding.FragmentMenuBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.tabs.TabLayout
 
 class MenuFragment : Fragment() {
 
@@ -36,7 +37,10 @@ class MenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        val tabLayout = binding.tabLayoutMenu
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.bebidas))
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.comida))
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.postres))
 
     }
 

@@ -5,31 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:padding="20dp"
     tools:context=".ui.fragments.inicio.InicioFragment">
 
-    <Button
-        android:id="@+id/btnMesas"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutMenu"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:text="Bebidas"
-        android:textSize="25dp"
-        android:backgroundTint="@color/buttons"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="20dp"
+        android:layout_height="wrap_content"
+        app:tabMode="fixed"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/btnCuentas"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:text="Comida"
-        android:textSize="25dp"
-        android:backgroundTint="@color/buttons"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="@+id/btnMesas"
-        app:layout_constraintStart_toStartOf="@+id/btnMesas"
-        app:layout_constraintTop_toBottomOf="@+id/btnMesas" />
+    </com.google.android.material.tabs.TabLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
