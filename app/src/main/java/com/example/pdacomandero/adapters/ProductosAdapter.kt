@@ -33,7 +33,7 @@ class ProductosAdapter(var lista: ArrayList<Producto>, val context: Context):
 
     }
 
-    fun actualizarMesas(nuevaLista: ArrayList<Producto>) {
+    fun actualizarProductos(nuevaLista: ArrayList<Producto>) {
         lista.clear()
         lista.addAll(nuevaLista)
         notifyDataSetChanged()
