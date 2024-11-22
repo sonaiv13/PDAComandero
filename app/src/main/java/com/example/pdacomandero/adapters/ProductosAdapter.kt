@@ -33,10 +33,9 @@ class ProductosAdapter(var lista: ArrayList<Producto>, val context: Context):
 
     }
 
-    fun actualizarProductos(nuevaLista: ArrayList<Producto>) {
-        lista.clear()
-        lista.addAll(nuevaLista)
-        notifyDataSetChanged()
+    fun agregarProductos(producto: Producto) {
+        lista.add(producto)
+        notifyItemInserted(lista.size-1)
     }
 
 

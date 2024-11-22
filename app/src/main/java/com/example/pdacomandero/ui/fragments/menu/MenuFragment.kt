@@ -2,6 +2,7 @@ package com.example.pdacomandero.ui.fragments.menu
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -55,10 +56,8 @@ class MenuFragment : Fragment() {
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.comida))
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.postres))
 
-        binding.recyclerProductos.apply {
-            adapter = productosAdapter
-            layoutManager = LinearLayoutManager(context)
-        }
+        binding.recyclerProductos.adapter = productosAdapter
+        binding.recyclerProductos.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -67,18 +66,32 @@ class MenuFragment : Fragment() {
                         binding.recyclerProductos.visibility = View.VISIBLE
                         rellenarRecyclerBebidas()
                     }
+                    1 -> {
+                        listaProductos.clear()
+                        productosAdapter.notifyDataSetChanged()
+                    }
+                    2 -> {
+                        binding.recyclerProductos.visibility = View.VISIBLE
+                        rellenarRecyclerPostres()
+                    }
+                    else -> {
+                        binding.recyclerProductos.visibility = View.GONE
+                        listaProductos.clear()
+                        productosAdapter.notifyDataSetChanged()
+                    }
                 }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                TODO("Not yet implemented")
+
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                TODO("Not yet implemented")
-            }
 
+            }
         })
+
+        rellenarRecyclerBebidas()
 
     }
 
@@ -89,17 +102,42 @@ class MenuFragment : Fragment() {
                 listaProductos.clear()
                 snapshot.children.forEach{
                     val producto = it.getValue(Producto::class.java)
-                    if(producto != null){
-                        listaProductos.add(producto)
+                    if (producto != null) {
+                        productosAdapter.agregarProductos(producto)
+                    } else {
+                        Log.e("MenuFragment", "Producto nulo encontrado en la base de datos.")
                     }
                 }
                 productosAdapter.notifyDataSetChanged()
+                Log.d("MenuFragment", "Datos cargados: ${listaProductos.size}")
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Snackbar.make(binding.root,"Algo ha fallado con la conexion a internet", Snackbar.LENGTH_SHORT).show()
             }
+        })
+    }
 
+    fun rellenarRecyclerPostres(){
+        val databaseRef = database.getReference("menu").child("postres")
+        databaseRef.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                listaProductos.clear()
+                snapshot.children.forEach{
+                    val producto = it.getValue(Producto::class.java)
+                    if (producto != null) {
+                        productosAdapter.agregarProductos(producto)
+                    } else {
+                        Log.e("MenuFragment", "Producto nulo encontrado en la base de datos.")
+                    }
+                }
+                productosAdapter.notifyDataSetChanged()
+                Log.d("MenuFragment", "Datos cargados: ${listaProductos.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Snackbar.make(binding.root,"Algo ha fallado con la conexion a internet", Snackbar.LENGTH_SHORT).show()
+            }
         })
     }
 
