@@ -45,6 +45,14 @@
         tools:layout_editor_absoluteX="-147dp">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerCategorias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerProductos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pdacomandero.R
 import com.example.pdacomandero.adapters.menu.BebidasAdapter
+import com.example.pdacomandero.adapters.menu.CategoriasAdapter
+import com.example.pdacomandero.adapters.menu.ComidaAdapter
 import com.example.pdacomandero.adapters.menu.PostresAdapter
 import com.example.pdacomandero.databinding.FragmentMenuBinding
 import com.example.pdacomandero.models.Producto
@@ -20,13 +22,16 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class MenuFragment : Fragment() {
+class MenuFragment : Fragment(), CategoriasAdapter.OnRecyclerCategoriasListener {
 
     private lateinit var binding: FragmentMenuBinding
     private lateinit var database: FirebaseDatabase
     private lateinit var bebidasAdapter: BebidasAdapter
     private lateinit var postresAdapter: PostresAdapter
+    private lateinit var categoriasAdapter: CategoriasAdapter
+    private lateinit var comidaAdapter: ComidaAdapter
     private var listaProductos = ArrayList<Producto>()
+    private var listaCategorias = ArrayList<String>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -34,6 +39,8 @@ class MenuFragment : Fragment() {
         listaProductos = ArrayList()
         bebidasAdapter = BebidasAdapter(listaProductos, context)
         postresAdapter = PostresAdapter(listaProductos, context)
+        categoriasAdapter = CategoriasAdapter(listaCategorias, context, this)
+        comidaAdapter = ComidaAdapter(listaProductos, context)
     }
 
     override fun onCreateView(
@@ -60,23 +67,23 @@ class MenuFragment : Fragment() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.position){
                     0 -> {
+                        listaCategorias.clear()
                         binding.recyclerProductos.adapter = bebidasAdapter
                         binding.recyclerProductos.visibility = View.VISIBLE
                         rellenarRecyclerBebidas()
                     }
                     1 -> {
                         listaProductos.clear()
-                        bebidasAdapter.notifyDataSetChanged()
+                        binding.recyclerCategorias.visibility = View.VISIBLE
+                        binding.recyclerCategorias.adapter = categoriasAdapter
+                        binding.recyclerCategorias.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                        rellenarCategorias()
                     }
                     2 -> {
+                        listaCategorias.clear()
                         binding.recyclerProductos.adapter = postresAdapter
                         binding.recyclerProductos.visibility = View.VISIBLE
                         rellenarRecyclerPostres()
-                    }
-                    else -> {
-                        binding.recyclerProductos.visibility = View.GONE
-                        listaProductos.clear()
-                        bebidasAdapter.notifyDataSetChanged()
                     }
                 }
             }
@@ -140,7 +147,56 @@ class MenuFragment : Fragment() {
         })
     }
 
+    fun rellenarCategorias(){
+        val databaseRef = database.getReference("menu").child("comida")
+        databaseRef.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                listaCategorias.clear()
+                snapshot.children.forEach {
+                    listaCategorias.add(it.key ?: "")
+                }
+                categoriasAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Snackbar.make(binding.root,"Algo ha fallado con la conexion a internet", Snackbar.LENGTH_SHORT).show()
+            }
+
+        })
+    }
+
+    fun mostrarComidaCategoria(categoria: String){
+        val databaseRef = database.getReference("menu").child("comida").child("$categoria")
+        databaseRef.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                listaProductos.clear()
+                snapshot.children.forEach {
+                    val producto = it.getValue(Producto::class.java)
+                    if (producto != null) {
+                        comidaAdapter.agregarProductos(producto)
+                    } else {
+                        Log.e("MenuFragment", "Producto nulo encontrado en la base de datos.")
+                    }
+                }
+                comidaAdapter.notifyDataSetChanged()
+                Log.d("MenuFragment", "Datos cargados: ${listaProductos.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Snackbar.make(binding.root,"Algo ha fallado con la conexion a internet", Snackbar.LENGTH_SHORT).show()
+            }
+
+        })
+    }
+
     override fun onDetach() {
         super.onDetach()
+    }
+
+    override fun onCategoriaSelected(categoria: String) {
+        Log.d("MenuFragment", "Categoría seleccionada: $categoria")
+        binding.recyclerCategorias.visibility = View.GONE
+        binding.recyclerProductos.visibility = View.VISIBLE
+        mostrarComidaCategoria(categoria)
     }
 }
