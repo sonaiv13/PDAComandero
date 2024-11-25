@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pdacomandero.R
 import com.example.pdacomandero.adapters.menu.BebidasAdapter
 import com.example.pdacomandero.adapters.menu.CategoriasAdapter
@@ -30,6 +31,7 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
     private lateinit var postresAdapter: PostresAdapter
     private lateinit var categoriasAdapter: CategoriasAdapter
     private lateinit var comidaAdapter: ComidaAdapter
+    private lateinit var currentAdapter: RecyclerView.Adapter<*>
     private var listaProductos = ArrayList<Producto>()
     private var listaCategorias = ArrayList<String>()
 
@@ -65,16 +67,15 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                listaProductos.clear()
                 when (tab?.position){
                     0 -> {
-                        listaProductos.clear()
                         binding.recyclerCategorias.visibility = View.GONE
                         binding.recyclerProductos.visibility = View.VISIBLE
                         binding.recyclerProductos.adapter = bebidasAdapter
                         rellenarRecyclerBebidas()
                     }
                     1 -> {
-                        listaProductos.clear()
                         listaCategorias.clear()
                         binding.recyclerProductos.visibility = View.GONE
                         binding.recyclerCategorias.visibility = View.VISIBLE
@@ -84,7 +85,6 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
 
                     }
                     2 -> {
-                        listaProductos.clear()
                         binding.recyclerCategorias.visibility = View.GONE
                         binding.recyclerProductos.visibility = View.VISIBLE
                         binding.recyclerProductos.adapter = postresAdapter
@@ -98,7 +98,30 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
+                listaProductos.clear()
+                when (tab?.position){
+                    0 -> {
+                        binding.recyclerCategorias.visibility = View.GONE
+                        binding.recyclerProductos.visibility = View.VISIBLE
+                        binding.recyclerProductos.adapter = bebidasAdapter
+                        rellenarRecyclerBebidas()
+                    }
+                    1 -> {
+                        listaCategorias.clear()
+                        binding.recyclerProductos.visibility = View.GONE
+                        binding.recyclerCategorias.visibility = View.VISIBLE
+                        binding.recyclerCategorias.adapter = categoriasAdapter
+                        binding.recyclerCategorias.layoutManager = LinearLayoutManager(context)
+                        rellenarCategorias()
 
+                    }
+                    2 -> {
+                        binding.recyclerCategorias.visibility = View.GONE
+                        binding.recyclerProductos.visibility = View.VISIBLE
+                        binding.recyclerProductos.adapter = postresAdapter
+                        rellenarRecyclerPostres()
+                    }
+                }
             }
         })
 
