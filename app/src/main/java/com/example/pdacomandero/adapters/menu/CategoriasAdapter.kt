@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pdacomandero.R
 
-class CategoriasAdapter(var lista: ArrayList<String>, val context: Context, var listener: OnRecyclerCategoriasListener):
+class CategoriasAdapter(var lista: ArrayList<String>, val context: Context, private val listener: CategoriaClickListener):
     RecyclerView.Adapter<CategoriasAdapter.MyHolder>() {
 
     class MyHolder(item: View): ViewHolder(item){
@@ -31,13 +31,18 @@ class CategoriasAdapter(var lista: ArrayList<String>, val context: Context, var 
         holder.nombreCategoria.text = categoria
 
         holder.itemView.setOnClickListener {
-            Log.d("CategoriasAdapter", "Clic detectado en categoría: $categoria")
-            listener.onCategoriaSelected(categoria)
+            Log.d("CategoriasAdapter", "Categoría clickeada: $categoria")
+            listener.onCategoriaClick(categoria)
         }
     }
 
-    interface OnRecyclerCategoriasListener {
-        fun onCategoriaSelected(categoria : String)
+    fun actualizarCategorias(nuevaLista: ArrayList<String>){
+        lista = nuevaLista
+        notifyDataSetChanged()
+    }
+
+    interface CategoriaClickListener {
+        fun onCategoriaClick(categoria: String)
     }
 
 }

@@ -22,7 +22,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class MenuFragment : Fragment(), CategoriasAdapter.OnRecyclerCategoriasListener {
+class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
 
     private lateinit var binding: FragmentMenuBinding
     private lateinit var database: FirebaseDatabase
@@ -67,22 +67,27 @@ class MenuFragment : Fragment(), CategoriasAdapter.OnRecyclerCategoriasListener 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.position){
                     0 -> {
-                        listaCategorias.clear()
-                        binding.recyclerProductos.adapter = bebidasAdapter
+                        listaProductos.clear()
+                        binding.recyclerCategorias.visibility = View.GONE
                         binding.recyclerProductos.visibility = View.VISIBLE
+                        binding.recyclerProductos.adapter = bebidasAdapter
                         rellenarRecyclerBebidas()
                     }
                     1 -> {
                         listaProductos.clear()
+                        listaCategorias.clear()
+                        binding.recyclerProductos.visibility = View.GONE
                         binding.recyclerCategorias.visibility = View.VISIBLE
                         binding.recyclerCategorias.adapter = categoriasAdapter
-                        binding.recyclerCategorias.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                        binding.recyclerCategorias.layoutManager = LinearLayoutManager(context)
                         rellenarCategorias()
+
                     }
                     2 -> {
-                        listaCategorias.clear()
-                        binding.recyclerProductos.adapter = postresAdapter
+                        listaProductos.clear()
+                        binding.recyclerCategorias.visibility = View.GONE
                         binding.recyclerProductos.visibility = View.VISIBLE
+                        binding.recyclerProductos.adapter = postresAdapter
                         rellenarRecyclerPostres()
                     }
                 }
@@ -151,14 +156,20 @@ class MenuFragment : Fragment(), CategoriasAdapter.OnRecyclerCategoriasListener 
         val databaseRef = database.getReference("menu").child("comida")
         databaseRef.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
+                Log.d("MenuFragment", "Firebase respuesta: ${snapshot.value}")
+
                 listaCategorias.clear()
                 snapshot.children.forEach {
-                    listaCategorias.add(it.key ?: "")
+                    val categoria = it.key ?: ""
+                    listaCategorias.add(categoria)
+                    Log.d("MenuFragment", "Categoría encontrada: $categoria")
                 }
-                categoriasAdapter.notifyDataSetChanged()
+                categoriasAdapter.actualizarCategorias(listaCategorias)
+                Log.d("MenuFragment", "Adaptador notificado de cambios")
             }
 
             override fun onCancelled(error: DatabaseError) {
+                Log.e("MenuFragment", "Error al cargar categorías: ${error.message}")
                 Snackbar.make(binding.root,"Algo ha fallado con la conexion a internet", Snackbar.LENGTH_SHORT).show()
             }
 
@@ -193,10 +204,10 @@ class MenuFragment : Fragment(), CategoriasAdapter.OnRecyclerCategoriasListener 
         super.onDetach()
     }
 
-    override fun onCategoriaSelected(categoria: String) {
-        Log.d("MenuFragment", "Categoría seleccionada: $categoria")
-        binding.recyclerCategorias.visibility = View.GONE
+    override fun onCategoriaClick(categoria: String) {
         binding.recyclerProductos.visibility = View.VISIBLE
+        binding.recyclerCategorias.adapter = comidaAdapter
         mostrarComidaCategoria(categoria)
     }
+
 }
