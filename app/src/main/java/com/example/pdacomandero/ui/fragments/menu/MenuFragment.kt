@@ -14,6 +14,7 @@ import com.example.pdacomandero.adapters.menu.ProductosAdapter
 import com.example.pdacomandero.adapters.menu.CategoriasAdapter
 import com.example.pdacomandero.databinding.FragmentMenuBinding
 import com.example.pdacomandero.models.Producto
+import com.example.pdacomandero.ui.dialogs.DialogoDetalleProducto
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.database.DataSnapshot
@@ -21,7 +22,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
+class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
+    ProductosAdapter.ProductosClickListener {
 
     private lateinit var binding: FragmentMenuBinding
     private lateinit var database: FirebaseDatabase
@@ -34,7 +36,7 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
         super.onAttach(context)
         database = FirebaseDatabase.getInstance("https://pdacomandero-default-rtdb.europe-west1.firebasedatabase.app/")
         listaProductos = ArrayList()
-        productosAdapter = ProductosAdapter(listaProductos, context)
+        productosAdapter = ProductosAdapter(listaProductos, context, this)
         categoriasAdapter = CategoriasAdapter(listaCategorias, context, this)
     }
 
@@ -212,14 +214,19 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
         })
     }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
-
     override fun onCategoriaClick(categoria: String) {
         binding.recyclerProductos.visibility = View.VISIBLE
         binding.recyclerCategorias.adapter = productosAdapter
         mostrarComidaCategoria(categoria)
     }
 
+    override fun onProductoClick(producto: Producto) {
+        val dialogo = DialogoDetalleProducto()
+        dialogo.setProducto(producto)
+        dialogo.show(childFragmentManager, null)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+    }
 }

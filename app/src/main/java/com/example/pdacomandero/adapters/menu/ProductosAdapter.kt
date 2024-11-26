@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pdacomandero.R
 import com.example.pdacomandero.models.Producto
 
-class ProductosAdapter(var lista: ArrayList<Producto>, val context: Context):
+class ProductosAdapter(var lista: ArrayList<Producto>, val context: Context, var listener: ProductosClickListener):
     RecyclerView.Adapter<ProductosAdapter.MyHolder>() {
 
     class MyHolder(item: View): ViewHolder(item){
@@ -30,6 +30,9 @@ class ProductosAdapter(var lista: ArrayList<Producto>, val context: Context):
         val producto = lista[position]
         holder.nombreProducto.text = producto.nombre
 
+        holder.itemView.setOnClickListener {
+            listener.onProductoClick(producto)
+        }
     }
 
     fun agregarProductos(producto: Producto) {
@@ -37,6 +40,8 @@ class ProductosAdapter(var lista: ArrayList<Producto>, val context: Context):
         notifyItemInserted(lista.size-1)
     }
 
-    interface BebidaClick
+    interface ProductosClickListener {
+        fun onProductoClick(producto: Producto)
+    }
 
 }
