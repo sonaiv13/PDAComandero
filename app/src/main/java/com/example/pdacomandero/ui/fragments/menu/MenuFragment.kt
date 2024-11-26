@@ -10,10 +10,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pdacomandero.R
-import com.example.pdacomandero.adapters.menu.BebidasAdapter
+import com.example.pdacomandero.adapters.menu.ProductosAdapter
 import com.example.pdacomandero.adapters.menu.CategoriasAdapter
-import com.example.pdacomandero.adapters.menu.ComidaAdapter
-import com.example.pdacomandero.adapters.menu.PostresAdapter
 import com.example.pdacomandero.databinding.FragmentMenuBinding
 import com.example.pdacomandero.models.Producto
 import com.google.android.material.snackbar.Snackbar
@@ -27,11 +25,8 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
 
     private lateinit var binding: FragmentMenuBinding
     private lateinit var database: FirebaseDatabase
-    private lateinit var bebidasAdapter: BebidasAdapter
-    private lateinit var postresAdapter: PostresAdapter
+    private lateinit var productosAdapter: ProductosAdapter
     private lateinit var categoriasAdapter: CategoriasAdapter
-    private lateinit var comidaAdapter: ComidaAdapter
-    private lateinit var currentAdapter: RecyclerView.Adapter<*>
     private var listaProductos = ArrayList<Producto>()
     private var listaCategorias = ArrayList<String>()
 
@@ -39,10 +34,8 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
         super.onAttach(context)
         database = FirebaseDatabase.getInstance("https://pdacomandero-default-rtdb.europe-west1.firebasedatabase.app/")
         listaProductos = ArrayList()
-        bebidasAdapter = BebidasAdapter(listaProductos, context)
-        postresAdapter = PostresAdapter(listaProductos, context)
+        productosAdapter = ProductosAdapter(listaProductos, context)
         categoriasAdapter = CategoriasAdapter(listaCategorias, context, this)
-        comidaAdapter = ComidaAdapter(listaProductos, context)
     }
 
     override fun onCreateView(
@@ -61,7 +54,7 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.comida))
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.postres))
 
-        binding.recyclerProductos.adapter = bebidasAdapter
+        binding.recyclerProductos.adapter = productosAdapter
         binding.recyclerProductos.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
 
@@ -72,7 +65,6 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
                     0 -> {
                         binding.recyclerCategorias.visibility = View.GONE
                         binding.recyclerProductos.visibility = View.VISIBLE
-                        binding.recyclerProductos.adapter = bebidasAdapter
                         rellenarRecyclerBebidas()
                     }
                     1 -> {
@@ -87,7 +79,6 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
                     2 -> {
                         binding.recyclerCategorias.visibility = View.GONE
                         binding.recyclerProductos.visibility = View.VISIBLE
-                        binding.recyclerProductos.adapter = postresAdapter
                         rellenarRecyclerPostres()
                     }
                 }
@@ -103,7 +94,6 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
                     0 -> {
                         binding.recyclerCategorias.visibility = View.GONE
                         binding.recyclerProductos.visibility = View.VISIBLE
-                        binding.recyclerProductos.adapter = bebidasAdapter
                         rellenarRecyclerBebidas()
                     }
                     1 -> {
@@ -118,7 +108,6 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
                     2 -> {
                         binding.recyclerCategorias.visibility = View.GONE
                         binding.recyclerProductos.visibility = View.VISIBLE
-                        binding.recyclerProductos.adapter = postresAdapter
                         rellenarRecyclerPostres()
                     }
                 }
@@ -137,12 +126,12 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
                 snapshot.children.forEach{
                     val producto = it.getValue(Producto::class.java)
                     if (producto != null) {
-                        bebidasAdapter.agregarProductos(producto)
+                        productosAdapter.agregarProductos(producto)
                     } else {
                         Log.e("MenuFragment", "Producto nulo encontrado en la base de datos.")
                     }
                 }
-                bebidasAdapter.notifyDataSetChanged()
+                productosAdapter.notifyDataSetChanged()
                 Log.d("MenuFragment", "Datos cargados: ${listaProductos.size}")
             }
 
@@ -160,12 +149,12 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
                 snapshot.children.forEach{
                     val producto = it.getValue(Producto::class.java)
                     if (producto != null) {
-                        postresAdapter.agregarProductos(producto)
+                        productosAdapter.agregarProductos(producto)
                     } else {
                         Log.e("MenuFragment", "Producto nulo encontrado en la base de datos.")
                     }
                 }
-                postresAdapter.notifyDataSetChanged()
+                productosAdapter.notifyDataSetChanged()
                 Log.d("MenuFragment", "Datos cargados: ${listaProductos.size}")
             }
 
@@ -207,12 +196,12 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
                 snapshot.children.forEach {
                     val producto = it.getValue(Producto::class.java)
                     if (producto != null) {
-                        comidaAdapter.agregarProductos(producto)
+                        productosAdapter.agregarProductos(producto)
                     } else {
                         Log.e("MenuFragment", "Producto nulo encontrado en la base de datos.")
                     }
                 }
-                comidaAdapter.notifyDataSetChanged()
+                productosAdapter.notifyDataSetChanged()
                 Log.d("MenuFragment", "Datos cargados: ${listaProductos.size}")
             }
 
@@ -229,7 +218,7 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener {
 
     override fun onCategoriaClick(categoria: String) {
         binding.recyclerProductos.visibility = View.VISIBLE
-        binding.recyclerCategorias.adapter = comidaAdapter
+        binding.recyclerCategorias.adapter = productosAdapter
         mostrarComidaCategoria(categoria)
     }
 

@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pdacomandero.R
 import com.example.pdacomandero.models.Producto
 
-class BebidasAdapter(var lista: ArrayList<Producto>, val context: Context):
-    RecyclerView.Adapter<BebidasAdapter.MyHolder>() {
+class ProductosAdapter(var lista: ArrayList<Producto>, val context: Context):
+    RecyclerView.Adapter<ProductosAdapter.MyHolder>() {
 
     class MyHolder(item: View): ViewHolder(item){
         val nombreProducto: TextView = itemView.findViewById(R.id.nombreProducto)
@@ -22,7 +22,7 @@ class BebidasAdapter(var lista: ArrayList<Producto>, val context: Context):
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
-        val vista: View = LayoutInflater.from(context).inflate(R.layout.recycler_bebidas, parent, false)
+        val vista: View = LayoutInflater.from(context).inflate(R.layout.recycler_productos, parent, false)
         return MyHolder(vista)
     }
 
@@ -37,5 +37,6 @@ class BebidasAdapter(var lista: ArrayList<Producto>, val context: Context):
         notifyItemInserted(lista.size-1)
     }
 
+    interface BebidaClick
 
 }
