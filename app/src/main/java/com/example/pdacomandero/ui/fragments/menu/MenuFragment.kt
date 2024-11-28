@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pdacomandero.R
@@ -57,7 +58,7 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.postres))
 
         binding.recyclerProductos.adapter = productosAdapter
-        binding.recyclerProductos.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerProductos.layoutManager = GridLayoutManager(context, 2)
 
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
@@ -215,8 +216,9 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
     }
 
     override fun onCategoriaClick(categoria: String) {
+        binding.recyclerCategorias.visibility = View.GONE
         binding.recyclerProductos.visibility = View.VISIBLE
-        binding.recyclerCategorias.adapter = productosAdapter
+        binding.recyclerProductos.adapter = productosAdapter
         mostrarComidaCategoria(categoria)
     }
 
