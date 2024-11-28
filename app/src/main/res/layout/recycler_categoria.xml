@@ -9,10 +9,9 @@
     app:cardElevation="4dp"
     android:background="@color/list">
 
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="2"
+    <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="50dp"
         android:padding="16dp">
 
         <TextView
@@ -20,10 +19,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nombre Categoria"
-            android:textStyle="bold"
-            android:textColor="@color/buttons"/>
+            android:textColor="@color/buttons"
+            android:textStyle="bold" />
 
-
-    </GridLayout>
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

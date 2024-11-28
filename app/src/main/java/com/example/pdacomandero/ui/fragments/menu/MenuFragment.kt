@@ -176,7 +176,10 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
                 listaCategorias.clear()
                 snapshot.children.forEach {
                     val categoria = it.key ?: ""
-                    listaCategorias.add(categoria)
+                    val categoriaFormateada = categoria.replaceFirstChar { char ->
+                        if (char.isLowerCase()) char.uppercaseChar() else char
+                    }
+                    listaCategorias.add(categoriaFormateada)
                     Log.d("MenuFragment", "Categoría encontrada: $categoria")
                 }
                 categoriasAdapter.actualizarCategorias(listaCategorias)
