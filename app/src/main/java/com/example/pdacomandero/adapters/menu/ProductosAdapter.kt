@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pdacomandero.R
 import com.example.pdacomandero.models.Producto
 
-class ProductosAdapter(var lista: ArrayList<Producto>, val context: Context, var listener: ProductosClickListener):
+class ProductosAdapter(var lista: ArrayList<Producto>, val context: Context, var listener: ProductosClickListener,
+                        private var itemLayout: Int):
     RecyclerView.Adapter<ProductosAdapter.MyHolder>() {
 
     class MyHolder(item: View): ViewHolder(item){
@@ -22,7 +23,7 @@ class ProductosAdapter(var lista: ArrayList<Producto>, val context: Context, var
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
-        val vista: View = LayoutInflater.from(context).inflate(R.layout.recycler_productos, parent, false)
+        val vista: View = LayoutInflater.from(context).inflate(itemLayout, parent, false)
         return MyHolder(vista)
     }
 

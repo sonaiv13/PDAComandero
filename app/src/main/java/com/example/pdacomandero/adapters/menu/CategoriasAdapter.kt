@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pdacomandero.R
 
-class CategoriasAdapter(var lista: ArrayList<String>, val context: Context, private val listener: CategoriaClickListener):
+class CategoriasAdapter(var lista: ArrayList<String>, val context: Context, private val listener: CategoriaClickListener,
+                        private var itemLayout: Int):
     RecyclerView.Adapter<CategoriasAdapter.MyHolder>() {
 
     class MyHolder(item: View): ViewHolder(item){
@@ -22,7 +23,7 @@ class CategoriasAdapter(var lista: ArrayList<String>, val context: Context, priv
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
-        val vista: View = LayoutInflater.from(context).inflate(R.layout.recycler_categoria, parent, false)
+        val vista: View = LayoutInflater.from(context).inflate(itemLayout, parent, false)
         return MyHolder(vista)
     }
 

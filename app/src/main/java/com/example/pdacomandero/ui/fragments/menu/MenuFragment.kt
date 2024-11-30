@@ -37,8 +37,9 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         super.onAttach(context)
         database = FirebaseDatabase.getInstance("https://pdacomandero-default-rtdb.europe-west1.firebasedatabase.app/")
         listaProductos = ArrayList()
-        productosAdapter = ProductosAdapter(listaProductos, context, this)
-        categoriasAdapter = CategoriasAdapter(listaCategorias, context, this)
+        listaCategorias = ArrayList()
+        productosAdapter = ProductosAdapter(listaProductos, context, this, R.layout.recycler_productos)
+        categoriasAdapter = CategoriasAdapter(listaCategorias, context, this, R.layout.recycler_categoria)
     }
 
     override fun onCreateView(
@@ -176,10 +177,7 @@ class MenuFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
                 listaCategorias.clear()
                 snapshot.children.forEach {
                     val categoria = it.key ?: ""
-                    val categoriaFormateada = categoria.replaceFirstChar { char ->
-                        if (char.isLowerCase()) char.uppercaseChar() else char
-                    }
-                    listaCategorias.add(categoriaFormateada)
+                    listaCategorias.add(categoria)
                     Log.d("MenuFragment", "Categoría encontrada: $categoria")
                 }
                 categoriasAdapter.actualizarCategorias(listaCategorias)
