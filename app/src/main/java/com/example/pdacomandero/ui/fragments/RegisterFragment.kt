@@ -2,6 +2,7 @@ package com.example.pdacomandero.ui.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import com.example.pdacomandero.R
 import com.example.pdacomandero.databinding.FragmentMainBinding
 import com.example.pdacomandero.databinding.FragmentRegisterBinding
 import com.example.pdacomandero.models.Mesa
+import com.example.pdacomandero.models.Pedido
 import com.example.pdacomandero.models.Usuario
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -67,6 +69,12 @@ class RegisterFragment : Fragment() {
                                     for(i in 1..30){
                                         val mesa = Mesa(id = i, numero = i, disponible = true, pedidos = mutableListOf())
                                         referenciaMesas.child(i.toString()).setValue(mesa)
+                                            .addOnSuccessListener {
+                                            Log.d("Registro", "Mesa $i registrada con pedidos vacíos")
+                                            }
+                                            .addOnFailureListener { exception ->
+                                                Log.e("Registro", "Error al registrar mesa $i: ${exception.message}")
+                                            }
                                     }
 
                                     //Navega al MainFragment al completar el registro

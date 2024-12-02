@@ -18,6 +18,7 @@ import com.example.pdacomandero.databinding.FragmentInicioBinding
 import com.example.pdacomandero.databinding.FragmentMainBinding
 import com.example.pdacomandero.databinding.FragmentMesasBinding
 import com.example.pdacomandero.models.Mesa
+import com.example.pdacomandero.models.Pedido
 import com.example.pdacomandero.models.Producto
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -147,6 +148,7 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val mesa = snapshot.getValue(Mesa::class.java)
                     if(mesa != null){
+                        mesa.pedidos = mesa.pedidos ?: mutableListOf()
                         mostrarDatosMesa(mesa)
                     } else {
                         binding.textMesaSeleccionada.text = "Mesa $numeroMesa no encontrada"
@@ -163,7 +165,7 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
 
     private fun mostrarDatosMesa(mesa: Mesa) {
         binding.textMesaSeleccionada.text = "Mesa ${mesa.numero}"
-        binding.textNumMesa.text = "Número:  ${mesa.numero}"
+        binding.textNumMesa.text = "Mesa:  ${mesa.numero}"
     }
 
     fun rellenarRecyclerBebidas(){
@@ -272,7 +274,44 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
     }
 
     override fun onProductoClick(producto: Producto) {
+        if(mesaSeleccionada != null){
+            val userId = FirebaseAuth.getInstance().currentUser!!.uid
+            if(userId != null){
+                val mesaRef = database.getReference("usuarios").child(userId).child("mesas").child(mesaSeleccionada.toString())
 
+                mesaRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val mesa = snapshot.getValue(Mesa::class.java)
+                        if (mesa != null) {
+                            val listaPedidos = mesa.pedidos
+
+                            val nuevoPedido = Pedido(
+                                id = listaPedidos.size + 1,
+                                numMesa = mesa.numero,
+                                productos = mutableListOf(producto),
+                                total = producto.precio
+                            )
+                            listaPedidos.add(nuevoPedido)
+                            mesa.pedidos = listaPedidos
+
+                            //Guardar cambios en Firebase
+                            mesaRef.setValue(mesa).addOnSuccessListener {
+                                Snackbar.make(binding.root, "Producto añadido correctamente", Snackbar.LENGTH_SHORT).show()
+                            }.addOnFailureListener {
+                                Snackbar.make(binding.root, "Error al guardar el producto", Snackbar.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Snackbar.make(binding.root,"Algo ha fallado con la conexion a internet", Snackbar.LENGTH_SHORT).show()
+                    }
+
+                })
+            }
+        } else {
+            Snackbar.make(binding.root,"Ninguna mesa seleccionada", Snackbar.LENGTH_SHORT).show()
+        }
     }
 
 }
