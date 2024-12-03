@@ -37,9 +37,17 @@ class PedidosAdapter(var lista: ArrayList<Producto>, val context: Context):
     }
 
     fun actualizarPedido(nuevaLista: ArrayList<Producto>) {
-        lista.clear()
-        lista.addAll(nuevaLista)
+        if(lista != nuevaLista){
+            lista.clear()
+            lista.addAll(nuevaLista)
+        }
         notifyDataSetChanged()
     }
+
+    fun agregarProducto(producto: Producto){
+        lista.add(producto)
+        notifyItemInserted(lista.size - 1)
+    }
+
 
 }

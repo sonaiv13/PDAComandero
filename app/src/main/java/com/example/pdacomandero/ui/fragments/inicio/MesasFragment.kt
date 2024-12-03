@@ -174,7 +174,7 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
         val mesaRef = database.getReference("usuarios").child(userId).child("mesas").child(mesaSeleccionada.toString())
 
-        mesaRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        mesaRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val mesa = snapshot.getValue(Mesa::class.java)
                 if(mesa != null){
@@ -183,7 +183,7 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
                         val ultimoPedido = listaPedidos.last()
 
                         val productosRef = mesaRef.child("pedidos").child(listaPedidos.indexOf(ultimoPedido).toString()).child("productos")
-                        productosRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                        productosRef.addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 val productos = snapshot.children.mapNotNull { it.getValue(Producto::class.java) }
 
