@@ -1,4 +1,4 @@
-package com.example.pdacomandero.adapters
+package com.example.pdacomandero.adapters.inicio
 
 import android.content.Context
 import android.view.LayoutInflater

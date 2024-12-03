@@ -7,20 +7,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pdacomandero.R
-import com.example.pdacomandero.adapters.MesasAdapter
+import com.example.pdacomandero.adapters.inicio.PedidosAdapter
 import com.example.pdacomandero.adapters.menu.CategoriasAdapter
 import com.example.pdacomandero.adapters.menu.ProductosAdapter
-import com.example.pdacomandero.databinding.FragmentInicioBinding
-import com.example.pdacomandero.databinding.FragmentMainBinding
 import com.example.pdacomandero.databinding.FragmentMesasBinding
 import com.example.pdacomandero.models.Mesa
 import com.example.pdacomandero.models.Pedido
 import com.example.pdacomandero.models.Producto
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -37,8 +32,10 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
     private var mesaSeleccionada: Int? = null
     private lateinit var productosAdapter: ProductosAdapter
     private lateinit var categoriasAdapter: CategoriasAdapter
+    private lateinit var pedidosAdapter: PedidosAdapter
     private var listaProductos = ArrayList<Producto>()
     private var listaCategorias = ArrayList<String>()
+    private var listaPedidos = ArrayList<Producto>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -46,8 +43,10 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         mesaSeleccionada = arguments?.getInt("mesaSeleccionada")
         listaProductos = ArrayList()
         listaCategorias = ArrayList()
+        listaPedidos = ArrayList()
         productosAdapter = ProductosAdapter(listaProductos, context, this, R.layout.recycler_productos_mesas)
         categoriasAdapter = CategoriasAdapter(listaCategorias, context, this, R.layout.recycler_categoria_mesas)
+        pedidosAdapter = PedidosAdapter(listaPedidos, context)
     }
 
     override fun onCreateView(
@@ -64,6 +63,9 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         super.onViewCreated(view, savedInstanceState)
 
         binding.textMesaSeleccionada.text = "Mesa ${mesaSeleccionada ?: "No seleccionada"}"
+
+        binding.recyclerPedido.adapter = pedidosAdapter
+        binding.recyclerPedido.layoutManager = LinearLayoutManager(context)
 
         if (mesaSeleccionada != null){
             cargarDatosMesa(mesaSeleccionada!!)
@@ -165,7 +167,45 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
 
     private fun mostrarDatosMesa(mesa: Mesa) {
         binding.textMesaSeleccionada.text = "Mesa ${mesa.numero}"
-        binding.textNumMesa.text = "Mesa:  ${mesa.numero}"
+        rellenarRecyclerPedido()
+    }
+
+    fun rellenarRecyclerPedido(){
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        val mesaRef = database.getReference("usuarios").child(userId).child("mesas").child(mesaSeleccionada.toString())
+
+        mesaRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val mesa = snapshot.getValue(Mesa::class.java)
+                if(mesa != null){
+                    val listaPedidos = mesa.pedidos
+                    if (listaPedidos.isNotEmpty()){
+                        val ultimoPedido = listaPedidos.last()
+
+                        val productosRef = mesaRef.child("pedidos").child(listaPedidos.indexOf(ultimoPedido).toString()).child("productos")
+                        productosRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val productos = snapshot.children.mapNotNull { it.getValue(Producto::class.java) }
+
+                                pedidosAdapter.actualizarPedido(ArrayList(productos))
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.e("Firebase", "Error al leer los productos", error.toException())
+                            }
+
+                        })
+                    } else {
+                        Log.e("Firebase", "La lista de pedidos está vacía")
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Error al leer la mesa", error.toException())
+            }
+
+        })
     }
 
     fun rellenarRecyclerBebidas(){
@@ -269,10 +309,6 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         mostrarComidaCategoria(categoria)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
-
     override fun onProductoClick(producto: Producto) {
         if(mesaSeleccionada != null){
             val userId = FirebaseAuth.getInstance().currentUser!!.uid
@@ -320,6 +356,10 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         } else {
             Snackbar.make(binding.root,"Ninguna mesa seleccionada", Snackbar.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
     }
 
 }
