@@ -285,13 +285,21 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
                         if (mesa != null) {
                             val listaPedidos = mesa.pedidos
 
-                            val nuevoPedido = Pedido(
-                                id = listaPedidos.size + 1,
-                                numMesa = mesa.numero,
-                                productos = mutableListOf(producto),
-                                total = producto.precio
-                            )
-                            listaPedidos.add(nuevoPedido)
+                            val pedidoExistente = listaPedidos.firstOrNull { it.numMesa == mesa.numero }
+
+                            if (pedidoExistente != null){
+                                pedidoExistente.productos.add(producto)
+                                pedidoExistente.total += producto.precio
+                            } else {
+                                val nuevoPedido = Pedido(
+                                    id = listaPedidos.size + 1,
+                                    numMesa = mesa.numero,
+                                    productos = mutableListOf(producto),
+                                    total = producto.precio
+                                )
+                                listaPedidos.add(nuevoPedido)
+                            }
+
                             mesa.pedidos = listaPedidos
 
                             //Guardar cambios en Firebase
