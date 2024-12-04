@@ -8,11 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pdacomandero.R
-import com.example.pdacomandero.models.Mesa
 import com.example.pdacomandero.models.Pedido
 import com.example.pdacomandero.models.Producto
 
-class PedidosAdapter(var lista: ArrayList<Producto>, val context: Context):
+class PedidosAdapter(var lista: ArrayList<Producto>, val context: Context, var listener: PedidoClickListener):
     RecyclerView.Adapter<PedidosAdapter.MyHolder>() {
 
     class MyHolder(item: View): ViewHolder(item){
@@ -34,6 +33,9 @@ class PedidosAdapter(var lista: ArrayList<Producto>, val context: Context):
         holder.cantidadProducto.text = producto.cantidad.toString()
         holder.nombreProducto.text = producto.nombre
 
+        holder.itemView.setOnClickListener{
+            listener.onPedidoClick(producto)
+        }
     }
 
     fun actualizarPedido(nuevaLista: ArrayList<Producto>) {
@@ -49,5 +51,13 @@ class PedidosAdapter(var lista: ArrayList<Producto>, val context: Context):
         notifyItemInserted(lista.size - 1)
     }
 
+    fun eliminarProducto(position: Int){
+        lista.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    interface PedidoClickListener {
+        fun onPedidoClick(producto: Producto)
+    }
 
 }

@@ -25,7 +25,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
-    ProductosAdapter.ProductosClickListener {
+    ProductosAdapter.ProductosClickListener, PedidosAdapter.PedidoClickListener {
 
     private lateinit var binding: FragmentMesasBinding
     private lateinit var database: FirebaseDatabase
@@ -46,7 +46,7 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         listaPedidos = ArrayList()
         productosAdapter = ProductosAdapter(listaProductos, context, this, R.layout.recycler_productos_mesas)
         categoriasAdapter = CategoriasAdapter(listaCategorias, context, this, R.layout.recycler_categoria_mesas)
-        pedidosAdapter = PedidosAdapter(listaPedidos, context)
+        pedidosAdapter = PedidosAdapter(listaPedidos, context, this)
     }
 
     override fun onCreateView(
@@ -355,6 +355,14 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
             }
         } else {
             Snackbar.make(binding.root,"Ninguna mesa seleccionada", Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+
+    override fun onPedidoClick(producto: Producto) {
+        val position = listaPedidos.indexOf(producto)
+        if(position != -1){
+            pedidosAdapter.eliminarProducto(position)
         }
     }
 
