@@ -2,6 +2,7 @@ package com.example.pdacomandero.ui.fragments.inicio
 
 import android.content.Context
 import android.os.Bundle
+import android.renderscript.Sampler.Value
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -360,11 +361,60 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
 
 
     override fun onPedidoClick(producto: Producto) {
-        val position = listaPedidos.indexOf(producto)
-        if(position != -1){
-            pedidosAdapter.eliminarProducto(position)
+        if (mesaSeleccionada != null) {
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+            if (userId != null) {
+                val mesaRef = database.getReference("usuarios").child(userId).child("mesas").child(mesaSeleccionada.toString())
+
+                mesaRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val mesa = snapshot.getValue(Mesa::class.java)
+                        if (mesa != null) {
+                            val listaPedidos = mesa.pedidos
+                            val pedidoActual = listaPedidos.find { it.numMesa == mesa.numero }
+
+                            if (pedidoActual != null) {
+                                // Verificar si producto no es nulo antes de operar
+                                val productoIndex = pedidoActual.productos.indexOfFirst { it.id == producto.id }
+                                if (productoIndex >= 0) {
+                                    pedidoActual.productos.removeAt(productoIndex)
+                                    pedidoActual.total -= producto.precio
+
+                                    // Si no hay más productos en el pedido, elimina el pedido completo
+                                    if (pedidoActual.productos.isEmpty()) {
+                                        listaPedidos.remove(pedidoActual)
+                                    }
+
+                                    // Actualiza Firebase
+                                    mesa.pedidos = listaPedidos
+                                    mesaRef.setValue(mesa).addOnSuccessListener {
+                                        // Actualiza la lista local
+                                        listaPedidos.flatMap { it.productos }.also {
+                                            pedidosAdapter.actualizarPedido(ArrayList(it))
+                                        }
+                                        Snackbar.make(binding.root, "Producto eliminado", Snackbar.LENGTH_SHORT).show()
+                                    }.addOnFailureListener {
+                                        Snackbar.make(binding.root, "Error al eliminar el producto", Snackbar.LENGTH_SHORT).show()
+                                    }
+                                } else {
+                                    Snackbar.make(binding.root, "Producto no encontrado", Snackbar.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Snackbar.make(binding.root, "Error al conectar con Firebase", Snackbar.LENGTH_SHORT).show()
+                    }
+                })
+            }
+        } else {
+            Snackbar.make(binding.root, "Ninguna mesa seleccionada", Snackbar.LENGTH_SHORT).show()
         }
     }
+
+
+
 
     override fun onDetach() {
         super.onDetach()

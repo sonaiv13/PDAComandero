@@ -51,10 +51,6 @@ class PedidosAdapter(var lista: ArrayList<Producto>, val context: Context, var l
         notifyItemInserted(lista.size - 1)
     }
 
-    fun eliminarProducto(position: Int){
-        lista.removeAt(position)
-        notifyItemRemoved(position)
-    }
 
     interface PedidoClickListener {
         fun onPedidoClick(producto: Producto)
