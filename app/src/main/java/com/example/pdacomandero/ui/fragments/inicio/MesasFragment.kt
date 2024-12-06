@@ -69,6 +69,7 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         binding.recyclerPedido.layoutManager = LinearLayoutManager(context)
 
         if (mesaSeleccionada != null){
+            cambiarDisponibilidad(mesaSeleccionada!!)
             cargarDatosMesa(mesaSeleccionada!!)
         }
 
@@ -169,6 +170,49 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
     private fun mostrarDatosMesa(mesa: Mesa) {
         binding.textMesaSeleccionada.text = "Mesa ${mesa.numero}"
         rellenarRecyclerPedido()
+    }
+
+    private fun cambiarDisponibilidad(numMesa: Int){
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+        if(userId != null){
+            val mesaRef = database.getReference("usuarios").child(userId).child("mesas").child(numMesa.toString())
+
+            mesaRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if(snapshot.exists()){
+                        val pedidos = snapshot.child("pedidos")
+
+                        if(pedidos.exists() && pedidos.hasChildren()) {
+                            val ultimoPedido = pedidos.children.lastOrNull()
+                            if(ultimoPedido != null){
+                                val productos = ultimoPedido.child("productos")
+                                val nuevaDisponibilidad = !(productos.exists() && productos.hasChildren())
+                                mesaRef.child("disponible").setValue(nuevaDisponibilidad)
+                                    .addOnSuccessListener {
+                                        Log.d("MesasFragment", "Disponibilidad actualizada a $nuevaDisponibilidad.")
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.e("MesasFragment", "Error al actualizar la disponibilidad: ${e.message}")
+                                    }
+                            } else {
+                                mesaRef.child("disponible").setValue(true)
+                            }
+                        } else {
+                            mesaRef.child("disponible").setValue(true)
+                        }
+
+                    } else {
+                        Log.d("MesasFragment", "La mesa seleccionada no existe en la base de datos.")
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w("MesasFragment", "Error al cargar datos de la mesa: ${error.message}")
+                }
+
+            })
+        }
     }
 
     fun rellenarRecyclerPedido(){
