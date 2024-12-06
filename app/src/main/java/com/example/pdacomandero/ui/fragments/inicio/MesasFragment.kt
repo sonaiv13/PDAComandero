@@ -30,7 +30,7 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
 
     private lateinit var binding: FragmentMesasBinding
     private lateinit var database: FirebaseDatabase
-    private var mesaSeleccionada: Int? = null
+    var mesaSeleccionada: Int? = null
     private lateinit var productosAdapter: ProductosAdapter
     private lateinit var categoriasAdapter: CategoriasAdapter
     private lateinit var pedidosAdapter: PedidosAdapter
@@ -456,7 +456,6 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
             Snackbar.make(binding.root, "Ninguna mesa seleccionada", Snackbar.LENGTH_SHORT).show()
         }
     }
-
 
 
 

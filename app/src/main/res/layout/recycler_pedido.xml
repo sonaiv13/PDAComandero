@@ -17,8 +17,9 @@
             android:layout_height="wrap_content"
             android:text="1"
             android:textSize="20sp"
+            android:layout_marginLeft="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnQuitar"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -27,7 +28,28 @@
             android:layout_height="wrap_content"
             android:text="Nombre Producto"
             android:textSize="20sp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnAgregar"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnQuitar"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:backgroundTint="@color/list"
+            android:src="@drawable/quitar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnAgregar"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:backgroundTint="@color/list"
+            android:src="@drawable/agregar"
+            android:layout_marginLeft="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/cantidadProducto"
             app:layout_constraintTop_toTopOf="parent" />
