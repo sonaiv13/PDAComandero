@@ -403,7 +403,6 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         }
     }
 
-
     override fun onPedidoClick(producto: Producto) {
         if (mesaSeleccionada != null) {
             val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -457,6 +456,76 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         }
     }
 
+    override fun onAgregarCantidad(producto: Producto) {
+        if (mesaSeleccionada != null){
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+            if(userId != null){
+                val mesaRef = database.getReference("usuarios").child(userId).child("mesas").child(mesaSeleccionada.toString())
+
+                mesaRef.addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val mesa = snapshot.getValue(Mesa::class.java)
+                        if(mesa != null){
+                            val pedidoActual = mesa.pedidos.lastOrNull { it.numMesa == mesa.numero }
+                            pedidoActual?.let {
+                                val productoIndex = it.productos.indexOfFirst { p -> p.id == producto.id }
+                                if(productoIndex >= 0){
+                                    it.productos[productoIndex].cantidad += 1
+                                    it.total += producto.precio
+                                }
+                            }
+                            mesaRef.setValue(mesa).addOnSuccessListener {
+                                rellenarRecyclerPedido()
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Snackbar.make(binding.root, "Error al conectar con Firebase", Snackbar.LENGTH_SHORT).show()
+                    }
+
+                })
+            }
+        }
+    }
+
+    override fun onQuitarCantidad(producto: Producto) {
+        if (mesaSeleccionada != null){
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+            if(userId != null){
+                val mesaRef = database.getReference("usuarios").child(userId).child("mesas").child(mesaSeleccionada.toString())
+
+                mesaRef.addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val mesa = snapshot.getValue(Mesa::class.java)
+                        if(mesa != null){
+                            val pedidoActual = mesa.pedidos.lastOrNull { it.numMesa == mesa.numero }
+                            pedidoActual?.let {
+                                val productoIndex = it.productos.indexOfFirst { p -> p.id == producto.id }
+                                if(productoIndex >= 0){
+                                    if(it.productos[productoIndex].cantidad > 1){
+                                        it.productos[productoIndex].cantidad -= 1
+                                        it.total -= producto.precio
+                                    } else {
+                                        it.productos.removeAt(productoIndex)
+                                        it.total -= producto.precio
+                                    }
+                                }
+                            }
+                            mesaRef.setValue(mesa).addOnSuccessListener {
+                                rellenarRecyclerPedido()
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Snackbar.make(binding.root, "Error al conectar con Firebase", Snackbar.LENGTH_SHORT).show()
+                    }
+
+                })
+            }
+        }
+    }
 
 
     override fun onDetach() {

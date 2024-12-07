@@ -21,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class PedidosAdapter(var lista: ArrayList<Producto>, 
-                     val context: Context, 
+                     val context: Context,
                      var listener: PedidoClickListener):
     RecyclerView.Adapter<PedidosAdapter.MyHolder>() {
 
@@ -47,16 +47,10 @@ class PedidosAdapter(var lista: ArrayList<Producto>,
         holder.nombreProducto.text = producto.nombre
 
         holder.btnQuitar.setOnClickListener{
-            if (producto.cantidad > 1) {
-                producto.cantidad--
-                holder.cantidadProducto.text = producto.cantidad.toString()
-                actualizarProductoEnFirebase(producto)
-            }
+            listener.onQuitarCantidad(producto)
         }
         holder.btnAgregar.setOnClickListener{
-            producto.cantidad++
-            holder.cantidadProducto.text = producto.cantidad.toString()
-            actualizarProductoEnFirebase(producto)
+            listener.onAgregarCantidad(producto)
         }
 
         holder.itemView.setOnClickListener{
@@ -80,43 +74,9 @@ class PedidosAdapter(var lista: ArrayList<Producto>,
 
     interface PedidoClickListener {
         fun onPedidoClick(producto: Producto)
+        fun onAgregarCantidad(producto: Producto)
+        fun onQuitarCantidad(producto: Producto)
     }
 
-    private fun actualizarProductoEnFirebase(producto: Producto) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
-            val mesaSeleccionada = (context as? MesasFragment)?.mesaSeleccionada
-            if (mesaSeleccionada != null) {
-                val mesaRef = FirebaseDatabase.getInstance()
-                    .getReference("usuarios/$userId/mesas/$mesaSeleccionada")
-
-                mesaRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val mesa = snapshot.getValue(Mesa::class.java)
-                        if (mesa != null) {
-                            val pedidoActual = mesa.pedidos.find { it.numMesa == mesaSeleccionada }
-                            if (pedidoActual != null) {
-                                val productoIndex = pedidoActual.productos.indexOfFirst { it.id == producto.id }
-                                if (productoIndex >= 0) {
-                                    // Actualiza la cantidad del producto
-                                    pedidoActual.productos[productoIndex].cantidad = producto.cantidad
-                                    mesaRef.setValue(mesa).addOnSuccessListener {
-                                        Log.d("PedidosAdapter", "Producto actualizado en Firebase.")
-                                    }.addOnFailureListener {
-                                        Log.e("PedidosAdapter", "Error al actualizar Firebase: ${it.message}")
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e("PedidosAdapter", "Error al leer Firebase: ${error.message}")
-                    }
-                })
-            }
-        }
-    }
-    
 
 }
