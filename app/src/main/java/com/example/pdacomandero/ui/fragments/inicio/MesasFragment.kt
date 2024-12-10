@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pdacomandero.R
 import com.example.pdacomandero.adapters.inicio.PedidosAdapter
 import com.example.pdacomandero.adapters.menu.CategoriasAdapter
@@ -54,10 +55,8 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding = FragmentMesasBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,98 +64,80 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
 
         binding.textMesaSeleccionada.text = "Mesa ${mesaSeleccionada ?: "No seleccionada"}"
 
-        binding.recyclerPedido.adapter = pedidosAdapter
-        binding.recyclerPedido.layoutManager = LinearLayoutManager(context)
+        setUpRecyclerView(binding.recyclerPedido, pedidosAdapter)
+        setUpRecyclerView(binding.recyclerProductos, productosAdapter)
 
-        if (mesaSeleccionada != null){
-            cambiarDisponibilidad(mesaSeleccionada!!)
-            cargarDatosMesa(mesaSeleccionada!!)
+        mesaSeleccionada?.let {
+            cambiarDisponibilidad(it)
+            cargarDatosMesa(it)
         }
 
-        val tabLayout = binding.tabLayoutMesa
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.bebidas))
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.comida))
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.postres))
+        binding.tabLayoutMesa.apply {
+            addTab(newTab().setIcon(R.drawable.bebidas))
+            addTab(newTab().setIcon(R.drawable.comida))
+            addTab(newTab().setIcon(R.drawable.postres))
 
-        binding.recyclerProductos.adapter = productosAdapter
-        binding.recyclerProductos.layoutManager = LinearLayoutManager(context)
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                listaProductos.clear()
-                when (tab?.position){
-                    0 -> {
-                        binding.recyclerCategorias.visibility = View.GONE
-                        binding.recyclerProductos.visibility = View.VISIBLE
-                        rellenarRecyclerBebidas()
-                    }
-                    1 -> {
-                        listaCategorias.clear()
-                        binding.recyclerProductos.visibility = View.GONE
-                        binding.recyclerCategorias.visibility = View.VISIBLE
-                        binding.recyclerCategorias.adapter = categoriasAdapter
-                        binding.recyclerCategorias.layoutManager = LinearLayoutManager(context)
-                        rellenarCategorias()
-
-                    }
-                    2 -> {
-                        binding.recyclerCategorias.visibility = View.GONE
-                        binding.recyclerProductos.visibility = View.VISIBLE
-                        rellenarRecyclerPostres()
+            addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    listaProductos.clear()
+                    when (tab?.position) {
+                        0 -> showRecycler(binding.recyclerProductos) { rellenarRecyclerBebidas() }
+                        1 -> {
+                            listaCategorias.clear()
+                            showRecycler(binding.recyclerCategorias) {
+                                setUpRecyclerView(binding.recyclerCategorias, categoriasAdapter)
+                                rellenarCategorias()
+                            }
+                        }
+                        2 -> showRecycler(binding.recyclerProductos) { rellenarRecyclerPostres() }
                     }
                 }
-            }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-                listaProductos.clear()
-                when (tab?.position){
-                    0 -> {
-                        binding.recyclerCategorias.visibility = View.GONE
-                        binding.recyclerProductos.visibility = View.VISIBLE
-                        rellenarRecyclerBebidas()
-                    }
-                    1 -> {
-                        listaCategorias.clear()
-                        binding.recyclerProductos.visibility = View.GONE
-                        binding.recyclerCategorias.visibility = View.VISIBLE
-                        binding.recyclerCategorias.adapter = categoriasAdapter
-                        binding.recyclerCategorias.layoutManager = LinearLayoutManager(context)
-                        rellenarCategorias()
-
-                    }
-                    2 -> {
-                        binding.recyclerCategorias.visibility = View.GONE
-                        binding.recyclerProductos.visibility = View.VISIBLE
-                        rellenarRecyclerPostres()
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                    listaProductos.clear()
+                    when (tab?.position) {
+                        0 -> showRecycler(binding.recyclerProductos) { rellenarRecyclerBebidas() }
+                        1 -> {
+                            listaCategorias.clear()
+                            showRecycler(binding.recyclerCategorias) {
+                                setUpRecyclerView(binding.recyclerCategorias, categoriasAdapter)
+                                rellenarCategorias()
+                            }
+                        }
+                        2 -> showRecycler(binding.recyclerProductos) { rellenarRecyclerPostres() }
                     }
                 }
-            }
 
-        })
+            })
+        }
 
         rellenarRecyclerBebidas()
 
     }
 
-    private fun cargarDatosMesa(numeroMesa: Int) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
+    private fun getUserId() = FirebaseAuth.getInstance()?.uid
 
-        if(userId != null){
-            val referenciaMesa = database.getReference("usuarios").child(userId).child("mesas").child(numeroMesa.toString())
+    private fun setUpRecyclerView(recyclerView: RecyclerView, adapter: RecyclerView.Adapter<*>) {
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+    }
 
-            referenciaMesa.addListenerForSingleValueEvent(object : ValueEventListener{
+    private fun cambiarDisponibilidad(numMesa: Int){
+        getUserId()?.let{ userId ->
+            val mesaRef = database.getReference("usuarios/$userId/mesas/$numMesa")
+
+            mesaRef.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val mesa = snapshot.getValue(Mesa::class.java)
-                    if(mesa != null){
-                        mesa.pedidos = mesa.pedidos ?: mutableListOf()
-                        mostrarDatosMesa(mesa)
-                    } else {
-                        binding.textMesaSeleccionada.text = "Mesa $numeroMesa no encontrada"
-                    }
+                    val nuevaDisponibilidad = snapshot.child("pedidos").children.none { it.child("productos").exists() }
+                    mesaRef.child("disponible").setValue(nuevaDisponibilidad)
+                        .addOnSuccessListener {
+                            Log.d("MesasFragment", "Disponibilidad actualizada a $nuevaDisponibilidad.")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("MesasFragment", "Error al actualizar la disponibilidad: ${e.message}")
+                        }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -164,6 +145,29 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
                 }
 
             })
+        }
+    }
+
+    private fun cargarDatosMesa(numeroMesa: Int) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+        if(userId != null){
+            getUserId()?.let { userId ->
+                database.getReference("usuarios/$userId/mesas/$numeroMesa")
+                    .addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val mesa = snapshot.getValue(Mesa::class.java)
+                        mesa?.let { mostrarDatosMesa(it) } ?: run {
+                            binding.textMesaSeleccionada.text = "Mesa $numeroMesa no encontrada"
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w("MesasFragment", "Error al cargar datos de la mesa: ${error.message}")
+                    }
+
+                })
+            }
         }
     }
 
@@ -172,85 +176,48 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         rellenarRecyclerPedido()
     }
 
-    private fun cambiarDisponibilidad(numMesa: Int){
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
+    private fun showRecycler(recyclerToShow: View, action: () -> Unit) {
+        binding.recyclerProductos.visibility = View.GONE
+        binding.recyclerCategorias.visibility = View.GONE
+        recyclerToShow.visibility = View.VISIBLE
+        action()
+    }
 
-        if(userId != null){
-            val mesaRef = database.getReference("usuarios").child(userId).child("mesas").child(numMesa.toString())
+    private fun rellenarRecyclerPedido(){
+        getUserId().let { userId ->
+            val mesaRef = database.getReference("usuarios/$userId/mesas/${mesaSeleccionada}")
 
             mesaRef.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        val pedidos = snapshot.child("pedidos")
+                    val mesa = snapshot.getValue(Mesa::class.java)
+                    if(mesa != null){
+                        val listaPedidos = mesa.pedidos
+                        if (listaPedidos.isNotEmpty()){
+                            val ultimoPedido = listaPedidos.last()
 
-                        if(pedidos.exists() && pedidos.hasChildren()) {
-                            val ultimoPedido = pedidos.children.lastOrNull()
-                            if(ultimoPedido != null){
-                                val productos = ultimoPedido.child("productos")
-                                val nuevaDisponibilidad = !(productos.exists() && productos.hasChildren())
-                                mesaRef.child("disponible").setValue(nuevaDisponibilidad)
-                                    .addOnSuccessListener {
-                                        Log.d("MesasFragment", "Disponibilidad actualizada a $nuevaDisponibilidad.")
-                                    }
-                                    .addOnFailureListener { e ->
-                                        Log.e("MesasFragment", "Error al actualizar la disponibilidad: ${e.message}")
-                                    }
-                            } else {
-                                mesaRef.child("disponible").setValue(true)
-                            }
-                        } else {
-                            mesaRef.child("disponible").setValue(true)
+                            val productosRef = mesaRef.child("pedidos").child(listaPedidos.indexOf(ultimoPedido).toString()).child("productos")
+                            productosRef.addValueEventListener(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    val productos = snapshot.children.mapNotNull { it.getValue(Producto::class.java) }
+
+                                    pedidosAdapter.actualizarPedido(ArrayList(productos))
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    Log.e("Firebase", "Error al leer los productos", error.toException())
+                                }
+
+                            })
                         }
-
-                    } else {
-                        Log.d("MesasFragment", "La mesa seleccionada no existe en la base de datos.")
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.w("MesasFragment", "Error al cargar datos de la mesa: ${error.message}")
+                    Log.e("Firebase", "Error al leer la mesa", error.toException())
                 }
 
             })
         }
-    }
-
-    fun rellenarRecyclerPedido(){
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
-        val mesaRef = database.getReference("usuarios").child(userId).child("mesas").child(mesaSeleccionada.toString())
-
-        mesaRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val mesa = snapshot.getValue(Mesa::class.java)
-                if(mesa != null){
-                    val listaPedidos = mesa.pedidos
-                    if (listaPedidos.isNotEmpty()){
-                        val ultimoPedido = listaPedidos.last()
-
-                        val productosRef = mesaRef.child("pedidos").child(listaPedidos.indexOf(ultimoPedido).toString()).child("productos")
-                        productosRef.addValueEventListener(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                val productos = snapshot.children.mapNotNull { it.getValue(Producto::class.java) }
-
-                                pedidosAdapter.actualizarPedido(ArrayList(productos))
-                            }
-
-                            override fun onCancelled(error: DatabaseError) {
-                                Log.e("Firebase", "Error al leer los productos", error.toException())
-                            }
-
-                        })
-                    } else {
-                        Log.e("Firebase", "La lista de pedidos está vacía")
-                    }
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("Firebase", "Error al leer la mesa", error.toException())
-            }
-
-        })
     }
 
     fun rellenarRecyclerBebidas(){
