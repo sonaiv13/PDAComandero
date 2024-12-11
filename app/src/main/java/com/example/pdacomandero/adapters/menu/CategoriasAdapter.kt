@@ -37,8 +37,9 @@ class CategoriasAdapter(var lista: ArrayList<String>, val context: Context, priv
         }
     }
 
-    fun actualizarCategorias(nuevaLista: ArrayList<String>){
-        lista = nuevaLista
+    fun actualizarCategorias(nuevaLista: List<String>){
+        lista.clear()
+        lista.addAll(nuevaLista)
         notifyDataSetChanged()
     }
 

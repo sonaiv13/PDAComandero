@@ -41,6 +41,12 @@ class ProductosAdapter(var lista: ArrayList<Producto>, val context: Context, var
         notifyItemInserted(lista.size-1)
     }
 
+    fun actualizarProductos(nuevaLista: List<Producto>) {
+        lista.clear()
+        lista.addAll(nuevaLista)
+        notifyDataSetChanged()
+    }
+
     interface ProductosClickListener {
         fun onProductoClick(producto: Producto)
     }

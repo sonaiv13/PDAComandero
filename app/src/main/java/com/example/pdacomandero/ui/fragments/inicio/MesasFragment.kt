@@ -220,51 +220,9 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         }
     }
 
-    fun rellenarRecyclerBebidas(){
-        val databaseRef = database.getReference("menu").child("bebidas")
-        databaseRef.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                listaProductos.clear()
-                snapshot.children.forEach{
-                    val producto = it.getValue(Producto::class.java)
-                    if (producto != null) {
-                        productosAdapter.agregarProductos(producto)
-                    } else {
-                        Log.e("MenuFragment", "Producto nulo encontrado en la base de datos.")
-                    }
-                }
-                productosAdapter.notifyDataSetChanged()
-                Log.d("MenuFragment", "Datos cargados: ${listaProductos.size}")
-            }
+    fun rellenarRecyclerBebidas() = cargarProductos("bebidas", productosAdapter)
 
-            override fun onCancelled(error: DatabaseError) {
-                Snackbar.make(binding.root,"Algo ha fallado con la conexion a internet", Snackbar.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-    fun rellenarRecyclerPostres(){
-        val databaseRef = database.getReference("menu").child("postres")
-        databaseRef.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                listaProductos.clear()
-                snapshot.children.forEach{
-                    val producto = it.getValue(Producto::class.java)
-                    if (producto != null) {
-                        productosAdapter.agregarProductos(producto)
-                    } else {
-                        Log.e("MenuFragment", "Producto nulo encontrado en la base de datos.")
-                    }
-                }
-                productosAdapter.notifyDataSetChanged()
-                Log.d("MenuFragment", "Datos cargados: ${listaProductos.size}")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Snackbar.make(binding.root,"Algo ha fallado con la conexion a internet", Snackbar.LENGTH_SHORT).show()
-            }
-        })
-    }
+    fun rellenarRecyclerPostres() = cargarProductos("postres", productosAdapter)
 
     fun rellenarCategorias(){
         val databaseRef = database.getReference("menu").child("comida")
@@ -285,6 +243,34 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
             override fun onCancelled(error: DatabaseError) {
                 Log.e("MenuFragment", "Error al cargar categorías: ${error.message}")
                 Snackbar.make(binding.root,"Algo ha fallado con la conexion a internet", Snackbar.LENGTH_SHORT).show()
+            }
+
+        })
+    }
+
+    private fun cargarProductos(categoria: String, adapter: ProductosAdapter) {
+        database.getReference("menu/$categoria").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productos = snapshot.children.mapNotNull { it.getValue(Producto::class.java) }
+                adapter.actualizarProductos(productos)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Error al cargar $categoria", error.toException())
+            }
+
+        })
+    }
+
+    private fun cargarCategorias(categoria: String, adapter: CategoriasAdapter) {
+        database.getReference("menu/$categoria").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val categorias = snapshot.children.mapNotNull { it.key }
+                adapter.actualizarCategorias(categorias)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Error al cargar categorias", error.toException())
             }
 
         })
