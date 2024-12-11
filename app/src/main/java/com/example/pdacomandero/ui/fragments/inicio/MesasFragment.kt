@@ -220,16 +220,14 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         }
     }
 
-    fun rellenarRecyclerBebidas() = cargarProductos("bebidas", productosAdapter)
+    private fun rellenarRecyclerBebidas() = cargarProductos("bebidas", productosAdapter)
 
-    fun rellenarRecyclerPostres() = cargarProductos("postres", productosAdapter)
+    private fun rellenarRecyclerPostres() = cargarProductos("postres", productosAdapter)
 
-    fun rellenarCategorias(){
+    private fun rellenarCategorias(){
         val databaseRef = database.getReference("menu").child("comida")
         databaseRef.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d("MenuFragment", "Firebase respuesta: ${snapshot.value}")
-
                 listaCategorias.clear()
                 snapshot.children.forEach {
                     val categoria = it.key ?: ""
@@ -237,11 +235,9 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
                     Log.d("MenuFragment", "Categoría encontrada: $categoria")
                 }
                 categoriasAdapter.actualizarCategorias(listaCategorias)
-                Log.d("MenuFragment", "Adaptador notificado de cambios")
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("MenuFragment", "Error al cargar categorías: ${error.message}")
                 Snackbar.make(binding.root,"Algo ha fallado con la conexion a internet", Snackbar.LENGTH_SHORT).show()
             }
 
@@ -262,21 +258,7 @@ class MesasFragment : Fragment(), CategoriasAdapter.CategoriaClickListener,
         })
     }
 
-    private fun cargarCategorias(categoria: String, adapter: CategoriasAdapter) {
-        database.getReference("menu/$categoria").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val categorias = snapshot.children.mapNotNull { it.key }
-                adapter.actualizarCategorias(categorias)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("Firebase", "Error al cargar categorias", error.toException())
-            }
-
-        })
-    }
-
-    fun mostrarComidaCategoria(categoria: String){
+    private fun mostrarComidaCategoria(categoria: String){
         val databaseRef = database.getReference("menu").child("comida").child("$categoria")
         databaseRef.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
